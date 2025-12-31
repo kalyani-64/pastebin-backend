@@ -41,9 +41,9 @@ app.post("/api/pastes", (req, res) => {
   });
 
   res.status(201).json({
-    id,
-    url: `http://localhost:5173/p/${id}`,
-  });
+  id,
+  url: `${req.protocol}://${req.get('host')}/p/${id}`,
+});
 });
 
 /* Fetch Paste (API) */
@@ -103,6 +103,10 @@ app.get("/p/:id", (req, res) => {
 });
 
 
-app.listen(4000, () =>
-  console.log("Backend running on http://localhost:4000")
-);
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = 4000;
+  app.listen(PORT, () => console.log(`Backend running on http://localhost:${PORT}`));
+}
+
+// Export the app for Vercel
+module.exports = app;
